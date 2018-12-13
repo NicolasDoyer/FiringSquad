@@ -27,34 +27,24 @@ public class IteratedLocalSearch extends AbstractSearcher{
         Vector<Neighbour> neighbours;
 
         // Helpers
+        Initializer initializer = new Initializer();
         Random generator = new Random();
-        HillClimberFI hcfi = new HillClimberFI(1000000,rules);
+        HillClimberFI hcfi = new HillClimberFI(10000000,rules);
 
         // Initialize first solution
-        Solution toReturn = hcfi.search(automata);
-        int bestFitness = toReturn.getFitness();
+        Solution bestSolution = hcfi.search(automata);
+        Solution newSolution;
 
         // Beginning iterated local search
         for(int i = 0; i < iteration; i++){
-            int[] previousRules = toReturn.getRules().clone();
-            hcfi.setInitialRules(perturbate(toReturn.getRules()));
-            toReturn = hcfi.search(automata);
-            if(toReturn.getFitness() < bestFitness){
-                toReturn.setRules(previousRules);
+            initializer.init(rules);
+            hcfi = new HillClimberFI(10000000,rules);
+            newSolution = hcfi.search(automata);
+            System.out.println("Iteration " + i + " best: " + bestSolution.getFitness() + " found: " + newSolution.getFitness());
+            if(bestSolution.getFitness() <= newSolution.getFitness()){
+                bestSolution = newSolution;
             }
         }
-        return toReturn;
-    }
-
-    public int[] perturbate(int[] rules){
-        Random generator = new Random();
-        Vector<Neighbour> neighbours = NeighboursHelper.getNeightbours(rules);
-        for(int i = 0; i < this.pertubationNumber; i++){
-            int randomIndex = generator.nextInt(neighbours.size());
-            Neighbour neighbour = neighbours.get(randomIndex);
-            rules[neighbour.getIndex()] = neighbour.getState();
-            neighbours.remove(randomIndex);
-        }
-        return rules;
+        return bestSolution;
     }
 }
