@@ -6,7 +6,7 @@ import searchers.utils.Solution;
 public class RandomSearch extends AbstractSearcher{
 
     private int iteration;
-    public static final int DEFAULT_ITERAITONS = 1000000;
+    public static final int DEFAULT_ITERAITONS = 10000000;
 
     public RandomSearch(int iteration){
         this.iteration = iteration;

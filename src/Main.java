@@ -1,20 +1,24 @@
 import helpers.Logger;
 import problem.Automata;
+import runnables.HillClimberFIRunner;
+import runnables.IteratedLocalSearchRunner;
+import runnables.RandomSearchRunner;
 import searchers.HillClimberFI;
 import searchers.IteratedLocalSearch;
 import searchers.RandomSearch;
 import searchers.utils.Solution;
 
+import java.io.File;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Main {
 
     private static final int MAX_FIRING_MEN = 30;
-    private static final String DEFAULT_FILE_FORMAT = ".csv";
-    List<String> argsList;
-    List<Option> optsList;
-    List<String> doubleOptsList;
+    private List<Option> optsList;
+    private List<String> doubleOptsList;
 
     private class Option {
         String flag, opt;
@@ -22,7 +26,6 @@ public class Main {
     }
 
     public Main(){
-        this.argsList = new ArrayList<>();
         this.optsList = new ArrayList<>();
         this.doubleOptsList = new ArrayList<>();
     }
@@ -37,7 +40,6 @@ public class Main {
         Automata automata = new Automata(MAX_FIRING_MEN);
         Solution s;
 
-
         int iteration = -1;
         for(Option option: executable.optsList){
             if(option.flag.equals("-iteration")){
@@ -51,7 +53,7 @@ public class Main {
                     executable.printHelp();
                     break;
                 case "benchmark":
-                    executable.launchBenchmark();
+                    executable.launchBenchmark(automata);
                     break;
                 case "randomsearch":
                     RandomSearch randomSearch = new RandomSearch( (iteration == -1) ? RandomSearch.DEFAULT_ITERAITONS : iteration);
@@ -92,8 +94,6 @@ public class Main {
                     }
                     break;
                 default:
-                    // arg
-                    argsList.add(args[i]);
                     break;
             }
         }
@@ -111,8 +111,57 @@ public class Main {
         System.out.println("         -iteration : specify the number of iterations to run (if its not specified, then the algorithm will use its default value available in class)");
     }
 
-    private void launchBenchmark(){
+    private void launchBenchmark(Automata automata){
+        // Clean old benchmarks
+        String[] paths = {System.getProperty("user.dir")+"/benchmark/", System.getProperty("user.dir")+"/benchmark/old/"};
+        for(String path: paths){
+            File directory = new File(path);
+            if (! directory.exists()){
+                directory.mkdir();
+            }
+        }
+        moveOldfile(RandomSearchRunner.DEFAULT_FILENAME);
+        moveOldfile(HillClimberFIRunner.DEFAULT_FILENAME);
+        moveOldfile(IteratedLocalSearchRunner.DEFAULT_FILENAME);
 
+
+        // Creating Threads in order to speed up the benchmark
+        System.out.println("Loading Benchmark ...");
+        Thread randomSearchThread = new Thread(new RandomSearchRunner(RandomSearch.DEFAULT_ITERAITONS,automata));
+        Thread hillClimberFIThread = new Thread(new HillClimberFIRunner(100,automata));
+        Thread iteratedLocalSearchThread = new Thread(new IteratedLocalSearchRunner(10,automata));
+
+        // Launching Threads
+        System.out.println("Running Benchmark (May take a while) ...");
+        randomSearchThread.start();
+        hillClimberFIThread.start();
+
+        try{
+            randomSearchThread.join();
+            hillClimberFIThread.join();
+        }catch (Exception e){
+            System.out.println("Thread interrupted");
+        }
+
+        iteratedLocalSearchThread.start();
+        try{
+            iteratedLocalSearchThread.join();
+        }catch (Exception e){
+            System.out.println("Thread interrupted");
+        }
+
+        System.out.println("Benchmark finished !");
+    }
+
+    private void moveOldfile(String filename){
+        String path = System.getProperty("user.dir")+"/benchmark/";
+        try {
+            Files.move(Paths.get(path + filename), Paths.get(path + "old/" +filename), StandardCopyOption.REPLACE_EXISTING);
+        }catch (NoSuchFileException e) {
+            System.out.println("No old " + filename + " to move");
+        }catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 }
 

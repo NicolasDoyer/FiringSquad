@@ -41,7 +41,8 @@ public class IteratedLocalSearch extends AbstractSearcher{
             initializer.init(rules);
             hillClimberFI.setInitialRules(rules);
             solution = hillClimberFI.search(automata);
-            System.out.println("Iteration n°" + i + " | Best fitness : " + previousFitness + " New fitness: " + solution.getFitness()) ;
+
+            System.out.println("Iteration n°" + i + " |  Best: " + previousFitness + " New: " + solution.getFitness());
 
             if(previousFitness > solution.getFitness()){
                 solution.setFitness(previousFitness);

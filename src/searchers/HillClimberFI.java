@@ -29,6 +29,10 @@ public class HillClimberFI extends AbstractSearcher{
         this.initialRules = initialRules;
     }
 
+    public int[] getInitialRules() {
+        return initialRules;
+    }
+
     @Override
     public Solution search(Automata automata) {
         // Helpers
@@ -65,9 +69,6 @@ public class HillClimberFI extends AbstractSearcher{
                 neighbours = NeighboursHelper.getNeightbours(rules);
                 bestFitness = newFitness;
             }
-
-            // Deleting the chosen neighbour (avoid repetitions)
-            neighbours.remove(randomIndex);
         }
 
         // Returning solution
