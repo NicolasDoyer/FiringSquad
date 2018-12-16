@@ -1,22 +1,21 @@
 package searchers;
 
-import helpers.Initializer;
-import helpers.NeighboursHelper;
-import problem.Automata;
-import problem.Neighbour;
-import searchers.utils.Solution;
+        import helpers.Initializer;
+        import helpers.NeighboursHelper;
+        import problem.Automata;
+        import problem.Neighbour;
+        import searchers.utils.Solution;
 
-import java.util.Random;
-import java.util.Vector;
+        import java.util.Random;
+        import java.util.Vector;
 
 public class IteratedLocalSearch extends AbstractSearcher{
 
+    public static final int DEFAULT_ITERATIONS = 100;
     private int iteration;
-    private int pertubationNumber;
 
-    public IteratedLocalSearch(int iteration, int pertubationNumber){
+    public IteratedLocalSearch(int iteration){
         this.iteration = iteration;
-        this.pertubationNumber = pertubationNumber;
     }
 
     @Override
@@ -24,27 +23,31 @@ public class IteratedLocalSearch extends AbstractSearcher{
 
         // Rules & Neighbours
         int[] rules = new int[216]; new Initializer().init(rules);
-        Vector<Neighbour> neighbours;
 
         // Helpers
         Initializer initializer = new Initializer();
-        Random generator = new Random();
-        HillClimberFI hcfi = new HillClimberFI(10000000,rules);
+        HillClimberFI hillClimberFI = new HillClimberFI(HillClimberFI.DEFAULT_ITERATIONS,rules);
 
         // Initialize first solution
-        Solution bestSolution = hcfi.search(automata);
-        Solution newSolution;
+        Solution solution = hillClimberFI.search(automata);
 
         // Beginning iterated local search
         for(int i = 0; i < iteration; i++){
+            // Backup Data
+            int[] previousRules = solution.getRules().clone();
+            int previousFitness = solution.getFitness();
+
+            // New solution (perturbation)
             initializer.init(rules);
-            hcfi = new HillClimberFI(10000000,rules);
-            newSolution = hcfi.search(automata);
-            System.out.println("Iteration " + i + " best: " + bestSolution.getFitness() + " found: " + newSolution.getFitness());
-            if(bestSolution.getFitness() <= newSolution.getFitness()){
-                bestSolution = newSolution;
+            hillClimberFI.setInitialRules(rules);
+            solution = hillClimberFI.search(automata);
+            System.out.println("Iteration n°" + i + " | Best fitness : " + previousFitness + " New fitness: " + solution.getFitness()) ;
+
+            if(previousFitness > solution.getFitness()){
+                solution.setFitness(previousFitness);
+                solution.setRules(previousRules);
             }
         }
-        return bestSolution;
+        return solution;
     }
 }

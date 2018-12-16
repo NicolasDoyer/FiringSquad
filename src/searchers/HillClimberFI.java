@@ -12,6 +12,7 @@ public class HillClimberFI extends AbstractSearcher{
 
     private int iteration;
     private int[] initialRules;
+    public static final int DEFAULT_ITERATIONS = 1000000;
 
     public HillClimberFI(int iteration){
         this.iteration = iteration;
