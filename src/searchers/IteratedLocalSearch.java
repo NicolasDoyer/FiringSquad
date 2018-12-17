@@ -13,9 +13,11 @@ public class IteratedLocalSearch extends AbstractSearcher{
 
     public static final int DEFAULT_ITERATIONS = 100;
     private int iteration;
+    private int pertubationNumber;
 
-    public IteratedLocalSearch(int iteration){
+    public IteratedLocalSearch(int iteration, int pertubationNumber){
         this.iteration = iteration;
+        this.pertubationNumber = pertubationNumber;
     }
 
     @Override
@@ -33,22 +35,39 @@ public class IteratedLocalSearch extends AbstractSearcher{
 
         // Beginning iterated local search
         for(int i = 0; i < iteration; i++){
-            // Backup Data
-            int[] previousRules = solution.getRules().clone();
             int previousFitness = solution.getFitness();
+            int[] previousRules   = solution.getRules().clone();
 
-            // New solution (perturbation)
-            initializer.init(rules);
-            hillClimberFI.setInitialRules(rules);
+            runPerturbation(solution.getRules(),initializer);
+            hillClimberFI.setInitialRules(solution.getRules());
             solution = hillClimberFI.search(automata);
 
             System.out.println("Iteration n°" + i + " |  Best: " + previousFitness + " New: " + solution.getFitness());
 
-            if(previousFitness > solution.getFitness()){
+            if(solution.getFitness() <= previousFitness){
                 solution.setFitness(previousFitness);
                 solution.setRules(previousRules);
             }
         }
         return solution;
+    }
+
+    private void runPerturbation(int[] rules, Initializer initializer){
+        Random generator = new Random();
+        Vector<Neighbour> neighbours = NeighboursHelper.getNeighbours(rules);
+        Vector<Neighbour> toDelete = new Vector<>();
+        for(int i = 0; i < this.pertubationNumber; i++){
+            // Choose a random rule
+            int randomIndex = generator.nextInt(neighbours.size());
+            Neighbour chosenNeighbour = neighbours.get(randomIndex);
+            initializer.setRule(rules,chosenNeighbour.getIndex(),chosenNeighbour.getState());
+
+            // Delete all similar neighbours (with the same index)
+            for(Neighbour neighbour: neighbours){
+                if(neighbour.getIndex() == chosenNeighbour.getIndex())
+                    toDelete.add(neighbour);
+            }
+            neighbours.removeAll(toDelete);
+        }
     }
 }

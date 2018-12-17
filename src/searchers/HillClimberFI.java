@@ -12,7 +12,7 @@ public class HillClimberFI extends AbstractSearcher{
 
     private int iteration;
     private int[] initialRules;
-    public static final int DEFAULT_ITERATIONS = 1000000;
+    public static final int DEFAULT_ITERATIONS = 500000;
 
     public HillClimberFI(int iteration){
         this.iteration = iteration;
@@ -29,10 +29,6 @@ public class HillClimberFI extends AbstractSearcher{
         this.initialRules = initialRules;
     }
 
-    public int[] getInitialRules() {
-        return initialRules;
-    }
-
     @Override
     public Solution search(Automata automata) {
         // Helpers
@@ -41,14 +37,18 @@ public class HillClimberFI extends AbstractSearcher{
 
         // Rules & Neighbours
         int[] rules = this.initialRules;
-        Vector<Neighbour> neighbours = NeighboursHelper.getNeightbours(rules);
-
+        Vector<Neighbour> neighbours = NeighboursHelper.getNeighbours(rules);
+        Vector<Neighbour> toDelete = new Vector<>();
+        
         // Initialize first solution
         int bestFitness = automata.f(rules,30);
         Solution toReturn = new Solution(rules); toReturn.setFitness(bestFitness);
 
         // Beginning search
+
+
         for(int i = 0; i < iteration; i++){
+            toDelete.clear();
             // When no more neighbours to explore
             if(neighbours.size() == 0){
                 return toReturn;
@@ -66,8 +66,15 @@ public class HillClimberFI extends AbstractSearcher{
                 rules[neighbour.getIndex()] = previousState;
             }
             else{
-                neighbours = NeighboursHelper.getNeightbours(rules);
+                neighbours = NeighboursHelper.getNeighbours(rules);
                 bestFitness = newFitness;
+
+                // Avoid repetitions
+                for(Neighbour neighbour1: neighbours){
+                    if(neighbour1.getIndex() == neighbour.getIndex())
+                        toDelete.add(neighbour1);
+                }
+                neighbours.removeAll(toDelete);
             }
         }
 

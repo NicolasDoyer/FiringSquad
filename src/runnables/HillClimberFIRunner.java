@@ -20,7 +20,7 @@ public class HillClimberFIRunner implements Runnable {
     @Override
     public void run() {
         Solution s;
-        for(int step = 100; step <= HillClimberFI.DEFAULT_ITERATIONS; step *=10){
+        for(int step = 250000; step <= 1000000; step *=2){
             for(int i = 0; i < this.globalIteration; i++){
                 HillClimberFI hillClimberFI = new HillClimberFI(step);
                 s = hillClimberFI.search(automata);

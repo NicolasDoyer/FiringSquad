@@ -19,12 +19,20 @@ public class IteratedLocalSearchRunner implements Runnable {
     @Override
     public void run() {
         Solution s;
+        int[] bestRules = new int[216];
+        int bestFitness = 0;
         for(int step = 10; step <= IteratedLocalSearch.DEFAULT_ITERATIONS; step += 10){
             for(int i = 0; i < this.globalIteration; i++){
-                IteratedLocalSearch iteratedLocalSearch = new IteratedLocalSearch(step);
+                IteratedLocalSearch iteratedLocalSearch = new IteratedLocalSearch(step,3);
                 s = iteratedLocalSearch.search(automata);
                 Logger.saveSolutionToFile(s,step,DEFAULT_FILENAME,automata);
+                if(s.getFitness() > bestFitness){
+                    bestRules = s.getRules().clone();
+                }
             }
         }
+        Solution bestSolution = new Solution(bestRules);
+        bestSolution.setFitness(bestFitness);
+        Logger.printAndSaveSolution(bestSolution,automata);
     }
 }

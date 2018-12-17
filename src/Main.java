@@ -66,7 +66,7 @@ public class Main {
                     Logger.printAndSaveSolution(s,automata);
                     break;
                 case "ils":
-                    IteratedLocalSearch ils = new IteratedLocalSearch( (iteration == -1) ? IteratedLocalSearch.DEFAULT_ITERATIONS : iteration);
+                    IteratedLocalSearch ils = new IteratedLocalSearch( (iteration == -1) ? IteratedLocalSearch.DEFAULT_ITERATIONS : iteration, 3);
                     s = ils.search(automata);
                     Logger.printAndSaveSolution(s,automata);
                     break;
@@ -133,7 +133,7 @@ public class Main {
 
         // Launching Threads
         System.out.println("Running Benchmark (May take a while) ...");
-        randomSearchThread.start();
+        //randomSearchThread.start();
         hillClimberFIThread.start();
 
         try{
@@ -143,7 +143,7 @@ public class Main {
             System.out.println("Thread interrupted");
         }
 
-        iteratedLocalSearchThread.start();
+        //iteratedLocalSearchThread.start();
         try{
             iteratedLocalSearchThread.join();
         }catch (Exception e){
