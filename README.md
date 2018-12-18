@@ -2,8 +2,7 @@
 
 "Firing Squad" est un problème de synchronisation.
 Le but est de trouver un ensemble de règles permettant aux cellules d'entrer dans l'état "firing" en même temps.
-___
-#####Exemple :
+
 ![alt text](./img/7synchronized.svg "7 synchronised") 
 
 ## Utilisation
