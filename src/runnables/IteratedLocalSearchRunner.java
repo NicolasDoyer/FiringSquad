@@ -2,6 +2,7 @@ package runnables;
 
 import helpers.Logger;
 import problem.Automata;
+import searchers.HillClimberFI;
 import searchers.IteratedLocalSearch;
 import searchers.utils.Solution;
 
@@ -19,16 +20,16 @@ public class IteratedLocalSearchRunner implements Runnable {
     @Override
     public void run() {
         Solution s;
-        int[] bestRules = new int[216];
         int bestFitness = 0;
-        for(int step = 10; step <= IteratedLocalSearch.DEFAULT_ITERATIONS; step += 10){
-            for(int i = 0; i < this.globalIteration; i++){
-                IteratedLocalSearch iteratedLocalSearch = new IteratedLocalSearch(step,3);
-                s = iteratedLocalSearch.search(automata);
-                Logger.saveSolutionToFile(s,step,DEFAULT_FILENAME,automata);
-                if(s.getFitness() > bestFitness){
-                    bestRules = s.getRules().clone();
-                }
+        int[] bestRules = new int[216];
+        for(int i = 0; i < this.globalIteration; i++){
+            IteratedLocalSearch iteratedLocalSearch = new IteratedLocalSearch(IteratedLocalSearch.DEFAULT_ITERATIONS,3);
+            s = iteratedLocalSearch.search(automata);
+            Logger.saveSolutionToFile(s,IteratedLocalSearch.DEFAULT_ITERATIONS,DEFAULT_FILENAME,automata);
+
+            if(s.getFitness() > bestFitness){
+                bestFitness = s.getFitness();
+                bestRules = s.getRules().clone();
             }
         }
         Solution bestSolution = new Solution(bestRules);

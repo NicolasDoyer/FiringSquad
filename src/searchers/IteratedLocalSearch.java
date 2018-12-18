@@ -11,7 +11,7 @@ package searchers;
 
 public class IteratedLocalSearch extends AbstractSearcher{
 
-    public static final int DEFAULT_ITERATIONS = 100;
+    public static final int DEFAULT_ITERATIONS = 2000;
     private int iteration;
     private int pertubationNumber;
 

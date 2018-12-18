@@ -11,7 +11,6 @@ import searchers.utils.Solution;
 import java.io.File;
 import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class Main {
@@ -133,7 +132,7 @@ public class Main {
 
         // Launching Threads
         System.out.println("Running Benchmark (May take a while) ...");
-        //randomSearchThread.start();
+        randomSearchThread.start();
         hillClimberFIThread.start();
 
         try{
@@ -143,7 +142,7 @@ public class Main {
             System.out.println("Thread interrupted");
         }
 
-        //iteratedLocalSearchThread.start();
+        iteratedLocalSearchThread.start();
         try{
             iteratedLocalSearchThread.join();
         }catch (Exception e){

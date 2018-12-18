@@ -45,8 +45,6 @@ public class HillClimberFI extends AbstractSearcher{
         Solution toReturn = new Solution(rules); toReturn.setFitness(bestFitness);
 
         // Beginning search
-
-
         for(int i = 0; i < iteration; i++){
             toDelete.clear();
             // When no more neighbours to explore
