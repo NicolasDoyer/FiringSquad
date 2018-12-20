@@ -14,7 +14,7 @@ java Main --help
 
 Lancer un algorithme et retourner son résultat: (L'utilisation de -iteration est optionnelle. L'algorithme utilisera la valeur par défaut présente dans sa classe)
 ```sh
-java Main --[hcfi|randomsearch|ils] [-iteration x]
+java Main --[hcfi|randomsearch|ils|tabou] [-iteration x]
 ```
 
 Lancer un benchmark (données sauvegardées dans différents fichiers)
