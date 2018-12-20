@@ -6,6 +6,7 @@ import runnables.RandomSearchRunner;
 import searchers.HillClimberFI;
 import searchers.IteratedLocalSearch;
 import searchers.RandomSearch;
+import searchers.TabouSearch;
 import searchers.utils.Solution;
 
 import java.io.File;
@@ -69,6 +70,11 @@ public class Main {
                     s = ils.search(automata);
                     Logger.printAndSaveSolution(s,automata);
                     break;
+                case "tabou":
+                    TabouSearch ts = new TabouSearch( (iteration == -1) ? IteratedLocalSearch.DEFAULT_ITERATIONS : iteration);
+                    s = ts.search(automata);
+                    Logger.printAndSaveSolution(s,automata);
+                    break;
                 default:
                     break;
             }
@@ -107,6 +113,7 @@ public class Main {
         System.out.println("         --randomsearch : run Random Search method (use '-iteration X' to perform X iterations on the algorithm) ");
         System.out.println("         --hcfi : run Hill Climber First Improvement method (use '-iteration X' to perform X iterations on the algorithm) ");
         System.out.println("         --ils : run Iterated Local Search method (using hcfi as local search) (use '-iteration X' to perform X iterations on the algorithm) ");
+        System.out.println("         --tabou : run Tabou Search method (use '-iteration X' to perform X iterations on the algorithm) ");
         System.out.println("         -iteration : specify the number of iterations to run (if its not specified, then the algorithm will use its default value available in class)");
     }
 
